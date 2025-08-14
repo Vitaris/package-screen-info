@@ -31,6 +31,7 @@ local function draw_info()
     local s = HEIGHT/10
     font:write(s, s*0.5, "Screen Information4", s, 1,1,1,1)
     white:draw(0, s*1.6-2, WIDTH, s*1.6+2, 0.2)
+    white:draw(0, s*1.6-3, WIDTH, s*1.6+3, 0.2)
 
     local w = font:write(s, s*1.75, "Serial: ", s, 1,1,1,1)
     font:write(s+w, s*1.75, serial, s, 1,1,.5,1)
