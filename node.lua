@@ -69,8 +69,17 @@ util.data_mapper{
         -- Try JSON first
         local ok, decoded = pcall(json.decode, raw)
         if ok then
-            local v = decoded.value or decoded.val or decoded.current or decoded[1] or decoded
-            dynamic_value = tostring(v)
+            if type(decoded) == "table" then
+                local v = decoded.value or decoded.val or decoded.current or decoded[1]
+                if v ~= nil then
+                    dynamic_value = tostring(v)
+                else
+                    dynamic_value = "<no key>"
+                end
+            else
+                -- decoded is a number/string/bool
+                dynamic_value = tostring(decoded)
+            end
         else
             -- Fallback: treat raw string as the value itself
             dynamic_value = raw
