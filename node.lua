@@ -14,25 +14,41 @@ local res = util.resource_loader{
 
 local logo = resource.create_colored_texture(0,0,0,0)
 local white = resource.create_colored_texture(1,1,1,1)
+local watched_value_asset -- currently watched JSON asset filename
 
 util.file_watch("config.json", function(raw)
     local config = json.decode(raw)
-    logo = resource.load_image(config.logo.asset_name)
+    if config.logo and config.logo.asset_name then
+        logo = resource.load_image(config.logo.asset_name)
+    end
+    -- Set up / switch JSON asset watcher if option provided
+    if config.value_json and config.value_json.asset_name then
+        local asset = config.value_json.asset_name
+        if asset ~= watched_value_asset then
+            watched_value_asset = asset
+            util.file_watch(asset, function(raw_json)
+                local ok, data = pcall(json.decode, raw_json)
+                if ok and type(data) == "table" then
+                    local v = data.value or data.val or data.current or data[1]
+                    dynamic_value = v and tostring(v) or "<no key>"
+                else
+                    dynamic_value = "<json error>"
+                end
+            end)
+        end
+    end
 end)
 
 -- Watch a separate JSON file (value.json) whose contents are updated via API/file upload.
 -- Expected format example: {"value": 42}
 -- Any change to the file will be picked up automatically.
+-- Legacy direct file watcher for bundled default file (kept if no asset option chosen)
 util.file_watch("value.json", function(raw)
+    if watched_value_asset then return end -- asset option overrides
     local ok, data = pcall(json.decode, raw)
     if ok and type(data) == "table" then
-        -- Try common keys or fallbacks
         local v = data.value or data.val or data.current or data[1]
-        if v == nil then
-            dynamic_value = "<no key>"
-        else
-            dynamic_value = tostring(v)
-        end
+        dynamic_value = v and tostring(v) or "<no key>"
     else
         dynamic_value = "<json error>"
     end

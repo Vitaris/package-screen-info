@@ -3,12 +3,22 @@
     "permissions": {
         "network": "Needs to access API"
     },
-    "options": [{
-        "title": "Logo (bottom right corner)",
-        "ui_width": 6,
-        "name": "logo",
-        "type": "resource",
-        "valid": ["image"],
-        "default": "empty.png"
-    }]
+    "options": [
+        {
+            "title": "Logo (bottom right corner)",
+            "ui_width": 6,
+            "name": "logo",
+            "type": "resource",
+            "valid": ["image"],
+            "default": "empty.png"
+        },
+        {
+            "title": "Value JSON asset (updates shown on screen)",
+            "ui_width": 6,
+            "name": "value_json",
+            "type": "resource",
+            "valid": ["json"],
+            "default": "value.json"
+        }
+    ]
 }
