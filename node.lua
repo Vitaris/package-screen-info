@@ -56,9 +56,9 @@ local function draw_info()
     font:write(s, s*2.75, "Description: "..description, s, 1,1,1,1)
     font:write(s, s*3.75, "Location: "..location, s, 1,1,1,1)
     font:write(s, s*4.75, "Value: "..dynamic_value, s, 1,1,1,1)
-    if res.device_details then
-        res.device_details:draw(s, s*5, s*5.5, s*9.5)
-    end
+    -- if res.device_details then
+    --     res.device_details:draw(s, s*5, s*5.5, s*9.5)
+    -- end
     util.draw_correct(logo, WIDTH-s*5.5, s*5, WIDTH-s, s*9.5)
 end
 
