@@ -29,6 +29,7 @@ util.data_mapper{
     end,
 
     ["value"] = function(raw)
+        print("recv value raw:", raw)
         local ok, decoded = pcall(json.decode, raw)
         if ok then
             if type(decoded) == "table" then
@@ -40,6 +41,7 @@ util.data_mapper{
         else
             dynamic_value = raw
         end
+        print("dynamic_value now:", dynamic_value)
     end,
 
     ["vars"] = function(raw)
