@@ -21,6 +21,7 @@ local white = resource.create_colored_texture(1,1,1,1)
 --   curl.exe -u ":API_KEY" -d "data=vars {\"temp\":22,\"status\":\"OK\"}" https://info-beamer.com/api/v1/device/DEVICE_ID/node/root
 util.data_mapper{
     ["device_info"] = function(info)
+        print("DEBUG_PRINT:", info)
         local ok, decoded = pcall(json.decode, info)
         if ok and type(decoded) == "table" then
             location = decoded.location or location
