@@ -7,6 +7,7 @@ local serial = sys.get_env "SERIAL"
 local location = "<please wait>"
 local description = "<please wait>"
 local dynamic_value = "<loading>" -- value shown on screen from value.json
+local dynamic_values = {}         -- optional map of extra values (updated via "vars" command)
 
 local res = util.resource_loader{
     "device_details.png";
@@ -74,6 +75,18 @@ util.data_mapper{
             -- Fallback: treat raw string as the value itself
             dynamic_value = raw
         end
+    end,
+    -- Batch update: send JSON object with arbitrary scalar keys
+    -- curl -u ":API_KEY" -d 'data=vars {"temp":21,"humidity":55}' https://info-beamer.com/api/v1/device/DEVICE_ID/node/root
+    ["vars"] = function(raw)
+        local ok, obj = pcall(json.decode, raw)
+        if ok and type(obj) == "table" then
+            for k,v in pairs(obj) do
+                if type(v) ~= "table" then
+                    dynamic_values[k] = tostring(v)
+                end
+            end
+        end
     end
 }
 
@@ -87,9 +100,13 @@ local function draw_info()
     font:write(s, s*2.75, "Description: "..description, s, 1,1,1,1)
     font:write(s, s*3.75, "Location: "..location, s, 1,1,1,1)
     font:write(s, s*4.75, "Value: "..dynamic_value, s, 1,1,1,1)
-    -- if res.device_details then
-    --     res.device_details:draw(s, s*5, s*5.5, s*9.5)
-    -- end
+    -- Render additional vars (if any) below
+    local line = 5.75
+    for k,v in pairs(dynamic_values) do
+        font:write(s, s*line, k..": "..v, s, 1,1,1,1)
+        line = line + 1
+        if s*line > HEIGHT - s then break end
+    end
     util.draw_correct(logo, WIDTH-s*5.5, s*5, WIDTH-s, s*9.5)
 end
 
