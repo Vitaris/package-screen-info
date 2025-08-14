@@ -43,6 +43,21 @@ util.data_mapper{
         info = json.decode(info)
         location = info.location
         description = info.description
+    end,
+    -- Update dynamic_value directly via API using the device node command:
+    -- POST /api/v1/device/<device_id>/node/root with form field
+    --   data=value {"value":123}
+    -- or data=value 123
+    ["value"] = function(raw)
+        -- Try JSON first
+        local ok, decoded = pcall(json.decode, raw)
+        if ok then
+            local v = decoded.value or decoded.val or decoded.current or decoded[1] or decoded
+            dynamic_value = tostring(v)
+        else
+            -- Fallback: treat raw string as the value itself
+            dynamic_value = raw
+        end
     end
 }
 
