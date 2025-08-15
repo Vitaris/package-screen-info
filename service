@@ -24,6 +24,7 @@ detail_page_qr = QRWriter("device_details.png")
 def fetch_info():
     info = api.device_info.get()
     print >>sys.stderr, info
+    print >>sys.stderr, 'abc'
     node['/device_info'](dict(
         description = info['description'],
         location = info['location'],
