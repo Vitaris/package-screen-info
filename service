@@ -23,7 +23,9 @@ detail_page_qr = QRWriter("device_details.png")
 
 def fetch_info():
     info = api.device_info.get()
+    value = api.value.get()
     print >>sys.stderr, info
+    print >>sys.stderr, value
     print >>sys.stderr, 'Current path:', os.getcwd()
     print >>sys.stderr, 'Folder contents:', os.listdir('.')
     node['/device_info'](dict(
